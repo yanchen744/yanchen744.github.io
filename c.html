@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梁娜娜我想对你说</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 50%, #ffd1dc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #8b0040;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            animation: float 6s infinite ease-in-out;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .main-message {
+            text-align: center;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(139, 0, 64, 0.2);
+            max-width: 90%;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .message-content {
+            font-size: 22px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .heart {
+            color: #ff4081;
+            font-size: 28px;
+            margin: 0 5px;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .care-message {
+            position: fixed;
+            min-width: 180px;
+            max-width: 200px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff9eb5 0%, #ffb6c1 100%);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(139, 0, 64, 0.3);
+            z-index: 10;
+            animation: fadeIn 0.3s, floatMessage 4s infinite alternate;
+            border: 2px solid #ff4081;
+            color: #8b0040;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        @keyframes floatMessage {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        footer {
+            position: absolute;
+            bottom: 20px;
+            color: #8b0040;
+            font-size: 14px;
+            text-align: center;
+            opacity: 0.7;
+        }
+        
+        .music-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(139, 0, 64, 0.2);
+            z-index: 100;
+            font-size: 12px;
+            color: #8b0040;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .music-icon {
+            animation: musicWave 1.5s infinite;
+        }
+        
+        @keyframes musicWave {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .play-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 182, 193, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .play-prompt h2 {
+            color: #8b0040;
+            font-size: 24px;
+        }
+        
+        .play-button {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(139, 0, 64, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .play-button:hover {
+            background: #e91e63;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="play-prompt" id="playPrompt">
+        <h2>点击开始播放音乐</h2>
+        <button class="play-button" id="playButton">开始播放</button>
+    </div>
+
+    <div class="music-indicator">
+        <span class="music-icon">🎵</span>
+        <span>开往春天的地铁</span>
+    </div>
+
+    <div class="main-message">
+        <h1><span class="heart">❤</span> 我想你了 <span class="heart">❤</span></h1>
+    
+    <footer>
+        温馨关怀 · 愿你每一天都健康快乐
+    </footer>
+
+    <!-- 音频元素 -->
+    <audio id="bgMusic" loop>
+        <source src="https://music.163.com/song/media/outer/url?id=4875075.mp3" type="audio/mpeg">
+        您的浏览器不支持音频元素。
+    </audio>
+
+    <script>
+        // 100种不重样的关心语
+        const caringMessages = [
+            "记得多喝水哦，保持身体水分平衡很重要~",
+            "工作/学习辛苦了，适当休息一下效率更高！",
+            "今天天气变化大，注意增减衣物，别感冒了",
+            "别忘了按时吃饭，身体健康是第一位的",
+            "眼睛累了吗？看看远处的绿色植物放松一下吧",
+            "你最近压力大吗？记得给自己一些放松的时间",
+            "今天也要保持微笑，微笑是最好的化妆品",
+            "无论遇到什么困难，记住你都不是一个人",
+            "你的努力我都看在眼里，你真的非常棒",
+            "记得偶尔站起来活动一下，久坐对身体不好",
+            "今天有什么开心的事想分享吗？我随时倾听",
+            "别对自己太苛刻，你已经做得很好了",
+            "要记得，你的感受和需求同样重要",
+            "累了就休息，别硬撑，身体是革命的本钱",
+            "今天也要好好爱自己，你值得被爱",
+            "你的存在让这个世界变得更加美好",
+            "别担心，一切困难都会慢慢好起来的",
+            "记得给自己一些独处的时间，沉淀心情",
+            "你的健康是我最关心的事情",
+            "今天有好好照顾自己吗？要对自己好一点",
+            "别让负面情绪影响你太久，转移下注意力",
+            "你值得所有的美好和幸福",
+            "有什么烦恼可以跟我说说，我在这里",
+            "别忘了，你比想象中要坚强得多",
+            "今天也要保持积极的心态，好事自然来",
+            "你的快乐就是我的快乐",
+            "无论何时，我都会支持你的决定",
+            "别太在意别人的看法，做真实的自己就好",
+            "记得每天都要寻找生活中的小确幸",
+            "你的微笑是世界上最美的风景",
+            "对自己温柔一点，允许自己不完美",
+            "今天也要为自己感到骄傲",
+            "别忘记，生活中还有很多美好的事物",
+            "你的身心健康是最重要的财富",
+            "累了就停下来，没关系，休息是为了走更远的路",
+            "你正在一步步成为更好的自己",
+            "别让忙碌淹没了生活中的美好瞬间",
+            "记得感恩今天的小幸运",
+            "你的努力终将会有回报",
+            "今天也要好好呼吸，放松心情",
+            "别把所有的压力都扛在自己身上",
+            "你是我最珍惜的人",
+            "记得每天都要有一点小小的进步",
+            "你的存在本身就是一种美好",
+            "别害怕表达自己的感受和需求",
+            "今天也要对自己说声谢谢",
+            "你的幸福是我最大的心愿",
+            "别忘记，你永远有选择的权利",
+            "今天也要好好照顾自己的情绪",
+            "你让这个世界变得更加温暖",
+            "记得早点休息，充足的睡眠很重要",
+            "今天有按时吃早餐吗？早餐是一天的能量来源",
+            "记得多吃蔬菜水果，营养均衡很重要",
+            "走路要小心，注意脚下的路",
+            "今天有没有想我呀？我一直都在想你",
+            "工作再忙也要记得起来走动走动",
+            "心情不好的时候可以听听音乐放松一下",
+            "记得给家人打个电话，他们也很想你",
+            "今天有没有遇到什么有趣的事情？",
+            "别总是熬夜，早点睡对身体好",
+            "记得微笑，你的笑容很温暖",
+            "今天也要给自己一个拥抱",
+            "遇到困难不要怕，我们一起面对",
+            "记得保护好眼睛，适当休息一下",
+            "今天有没有好好照顾自己？",
+            "别给自己太大压力，慢慢来",
+            "记得多和朋友联系，分享生活中的点滴",
+            "今天也要保持好心情哦",
+            "走路不要看手机，注意安全",
+            "记得按时吃药，身体最重要",
+            "今天有没有好好吃饭？不要挑食",
+            "别总是宅在家里，出去走走呼吸新鲜空气",
+            "记得保持房间通风，空气流通很重要",
+            "今天也要相信自己，你是最棒的",
+            "遇到不开心的事要跟我说",
+            "记得保持运动，增强体质",
+            "今天有没有喝够八杯水？",
+            "别总是吃外卖，自己做饭更健康",
+            "记得保持乐观，一切都会好起来的",
+            "今天也要好好爱惜自己",
+            "走路记得看路，不要着急",
+            "记得定期体检，了解身体状况",
+            "今天有没有好好休息？",
+            "别总是玩手机，让眼睛休息一下",
+            "记得保持好心情，开心最重要",
+            "今天也要努力成为更好的自己",
+            "遇到挫折不要气馁，失败是成功之母",
+            "记得保持微笑，笑容能治愈一切",
+            "今天有没有好好照顾自己？",
+            "别总是担心未来，享受当下的美好",
+            "记得保持耐心，好事多磨",
+            "今天也要好好珍惜身边的人",
+            "走路记得抬头挺胸，自信一点",
+            "记得保持善良，但也要保护好自己",
+            "今天有没有给自己一点奖励？",
+            "别总是比较，每个人都有自己的节奏",
+            "记得保持感恩的心，珍惜拥有的一切",
+            "今天也要好好享受生活",
+            "遇到困难记得寻求帮助",
+            "记得保持好奇心，探索世界的精彩",
+            "今天有没有好好爱自己？",
+            "别总是自责，人无完人",
+            "记得保持热情，生活充满无限可能",
+            "今天也要好好对待身边的人",
+            "走路记得慢一点，安全第一",
+            "记得保持学习的心态，不断进步",
+            "今天有没有好好规划时间？",
+            "别总是拖延，今日事今日毕",
+            "记得保持真诚，做最真实的自己",
+            "今天也要好好感受生活的美好",
+            "遇到不开心要记得释放情绪",
+            "记得保持平衡，工作生活两不误",
+            "今天有没有好好欣赏身边的风景？",
+            "梁娜娜我想你了 ❤️"
+        ];
+        
+        // 创建漂浮的爱心背景
+        function createFloatingHearts() {
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                document.body.appendChild(heart);
+            }
+        }
+        
+        // 显示浮动关心语
+        function showCareMessage() {
+            const message = document.createElement('div');
+            message.className = 'care-message';
+            
+            // 随机选择一条关心语
+            const randomMessage = caringMessages[Math.floor(Math.random() * caringMessages.length)];
+            message.textContent = randomMessage;
+            
+            // 随机位置
+            const left = Math.max(10, Math.random() * (window.innerWidth - 200));
+            const top = Math.max(10, Math.random() * (window.innerHeight - 100));
+            message.style.left = left + 'px';
+            message.style.top = top + 'px';
+            
+            document.body.appendChild(message);
+            
+            // 5秒后淡出并移除
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 1s';
+                setTimeout(() => {
+                    if (document.body.contains(message)) {
+                        document.body.removeChild(message);
+                    }
+                }, 1000);
+            }, 5000);
+        }
+        
+        // 音乐控制
+        function setupMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            const playPrompt = document.getElementById('playPrompt');
+            const playButton = document.getElementById('playButton');
+            
+            // 设置音乐参数
+            bgMusic.volume = 0.3;
+            
+            // 播放音乐函数
+            function playMusic() {
+                bgMusic.play().then(() => {
+                    // 成功播放后隐藏提示
+                    playPrompt.style.display = 'none';
+                    console.log('音乐开始播放');
+                }).catch(error => {
+                    console.log('播放失败:', error);
+                });
+            }
+            
+            // 点击按钮播放
+            playButton.addEventListener('click', playMusic);
+            
+            // 点击页面任意位置播放
+            document.body.addEventListener('click', function firstClick() {
+                playMusic();
+                document.body.removeEventListener('click', firstClick);
+            }, { once: true });
+            
+            // 尝试自动播放（在某些浏览器中可能有效）
+            setTimeout(() => {
+                playMusic();
+            }, 1000);
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingHearts();
+            setupMusic();
+            
+            // 0.5秒后开始显示关心语
+            setTimeout(() => {
+                showCareMessage();
+                
+                // 每1秒显示一条新的关心语
+                setInterval(showCareMessage, 100);
+            }, 50);
+        });
+    </script>
+</body>
+</html>
